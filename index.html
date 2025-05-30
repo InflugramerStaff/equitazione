@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabella di Valutazione Dressage</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        // Definisci DEFAULT_COEFFICIENTS qui per renderlo disponibile globalmente
+        window.DEFAULT_COEFFICIENTS = {
+            e100: {}, // Tutti 1
+            e200: {6:2, 9:2, 14:2, 15:2, 16:2},
+            f100: {12:2, 15:2, 22:2, 23:2},
+            f400: {4:2, 7:2, 12:2, 18:2, 23:2, 25:2, 29:2, 30:2},
+            m_junior: {5:2, 11:2, 14:2, 30:2},
+            grand_prix_d51: {3:2, 4:2, 8:2, 11:2, 12:2, 15:2, 22:2, 23:2, 24:2, 26:2, 30:2, 34:2},
+            intermediate_a_d41: {4:2, 9:2, 10:2, 18:2, 22:2, 28:2},
+            st_georges_d2: {5:2, 10:2, 13:2, 14:2, 18:2, 20:2, 27:2},
+            m100: {5:2, 9:2, 11:2, 12:2, 15:2, 18:2, 23:2, 24:2},
+            novilla2025: {21:2, 22:2, 23:2, 24:2, 25:2},
+            primera2025: {22:2, 23:2, 24:2, 25:2, 26:2},
+            rlm_ibiza: {1:2, 6:2, 7:2, 12:2, 13:2, 17:10, 18:10},
+            rlm_bailarina: {2:2, 11:2, 12:2, 13:2, 14:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            rlm_carmencita: {1:2, 4:2, 5:2, 13:2, 14:2, 15:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            rlm_fandango: {2:2, 6:2, 7:2, 12:2, 13:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            rlm_flamenca: {1:2, 5:2, 6:2, 12:2, 13:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            rlm_iberica: {2:2, 11:2, 12:2, 13:2, 14:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            rlm_lusitania: {2:2, 6:2, 7:2, 13:2, 14:2, 19:4, 20:4, 21:4, 22:4, 23:4},
+            arte_eleganza: {3:2, 10:2} // Figure 3 e 10 hanno coeff 2, le altre 1
+        };
+
+        function generateTableRows(testType, figureCount, sectionHeaders = {}, figureSpecificLabels = {}) {
+            const coeffsConfig = window.DEFAULT_COEFFICIENTS && window.DEFAULT_COEFFICIENTS[testType] ? window.DEFAULT_COEFFICIENTS[testType] : {};
+            let sectionHeaderWrittenFlags = {};
+
+            for (let i = 1; i <= figureCount; i++) {
+                if (sectionHeaders[i] && !sectionHeaderWrittenFlags[testType + '_' + i]) {
+                    document.write(`<tr class="section-header"><td colspan="5">${sectionHeaders[i]}</td></tr>`);
+                    sectionHeaderWrittenFlags[testType + '_' + i] = true;
+                }
+                const coeff = coeffsConfig[i] || 1;
+                const label = figureSpecificLabels[i] ? `<br><small>${figureSpecificLabels[i]}</small>` : "";
+                document.write(
+                    `<tr>
+                        <td class="figure-column">${i}${label}</td>
+                        <td class="coeff-column"><input type="number" class="coeff-input" id="${testType}_coeff${i}" value="${coeff}" min="1" max="3" onchange="calculateTotals('${testType}')"></td>
+                        <td><input type="number" id="${testType}_judgeA${i}" min="0" max="10" step="0.1" onchange="calculateTotals('${testType}')"></td>
+                        <td><input type="number" id="${testType}_judgeB${i}" min="0" max="10" step="0.1" onchange="calculateTotals('${testType}')"></td>
+                        <td><input type="number" id="${testType}_judgeC${i}" min="0" max="10" step="0.1" onchange="calculateTotals('${testType}')"></td>
+                    </tr>`
+                );
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tabella di Valutazione Dressage</h1>
+        <p class="subtitle">Sistema di calcolo per riprese di dressage</p>
+
+        <div class="binomi-management">
+            <div class="binomi-controls">
+                <div class="binomi-info"><h3>Gestione Binomi</h3><div class="binomi-counter"><span>Binomio <span id="currentBinomio">1</span> di <span id="totalBinomi">1</span></span></div></div>
+                <div class="binomi-buttons"><button class="btn btn-add" onclick="addNewBinomio()">➕ Aggiungi Binomio</button><button class="btn btn-prev" onclick="previousBinomio()" id="prevBtn" disabled>⬅️ Precedente</button><button class="btn btn-next" onclick="nextBinomio()" id="nextBtn" disabled>➡️ Successivo</button><button class="btn btn-delete" onclick="deleteBinomio()" id="deleteBtn" disabled>🗑️ Elimina</button></div>
+            </div>
+            <div class="binomio-data">
+                <div class="rider-info">
+                    <div class="field-group"><label for="riderName">Nome:</label><input type="text" id="riderName" placeholder="Nome cavaliere" onchange="updateBinomioData()"></div>
+                    <div class="field-group"><label for="riderSurname">Cognome:</label><input type="text" id="riderSurname" placeholder="Cognome cavaliere" onchange="updateBinomioData()"></div>
+                    <div class="field-group"><label for="horseName">Cavallo:</label><input type="text" id="horseName" placeholder="Nome cavallo" onchange="updateBinomioData()"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-menu-container">
+            <div class="tab-menu">
+                <button class="tab-button active" onclick="showTab('e100')">E100</button>
+                <button class="tab-button" onclick="showTab('e200')">E200</button>
+                <button class="tab-button" onclick="showTab('f100')">F100</button>
+                <button class="tab-button" onclick="showTab('f400')">F400</button>
+                <button class="tab-button" onclick="showTab('m_junior')">M Junior</button>
+                <button class="tab-button" onclick="showTab('grand_prix_d51')">GP D5.1</button>
+                <button class="tab-button" onclick="showTab('intermediate_a_d41')">Int. A D4/1</button>
+                <button class="tab-button" onclick="showTab('st_georges_d2')">St.Georges D2</button>
+                <button class="tab-button" onclick="showTab('m100')">M100</button>
+            </div>
+            <div class="tab-menu">
+                <button class="tab-button" onclick="showTab('novilla2025')">Novilla 2025</button>
+                <button class="tab-button" onclick="showTab('primera2025')">Primera 2025</button>
+                <button class="tab-button" onclick="showTab('rlm_ibiza')">RLM Ibiza</button>
+                <button class="tab-button" onclick="showTab('rlm_bailarina')">RLM Bailarina</button>
+                <button class="tab-button" onclick="showTab('rlm_carmencita')">RLM Carmencita</button>
+                <button class="tab-button" onclick="showTab('rlm_fandango')">RLM Fandango</button>
+                <button class="tab-button" onclick="showTab('rlm_flamenca')">RLM Flamenca</button>
+                <button class="tab-button" onclick="showTab('rlm_iberica')">RLM Iberica</button>
+                 <button class="tab-button" onclick="showTab('rlm_lusitania')">RLM Lusitania</button>
+            </div>
+            <div class="tab-menu">
+                <button class="tab-button" onclick="showTab('arte_eleganza')">Arte Eleganza</button>
+            </div>
+        </div>
+
+        <script>
+            function createTableStructure(testType, title, subtitle, figureCount, sectionHeaders = {}, figureSpecificLabels = {}) {
+                let activeClass = testType === 'e100' ? 'active' : '';
+                document.write(
+                    `<div id="${testType}" class="tab-content ${activeClass}">
+                        <h2 style="text-align: center; color: #202124;">${title}</h2>
+                        <p style="text-align: center; font-style: italic;">${subtitle}</p>
+                        <div class="binomio-header"><h3 id="${testType}-binomio-title">Binomio 1</h3></div>
+                        <table>
+                            <thead><tr><th style="width: 80px;">Figura</th><th class="coeff-column">Coefficiente</th><th class="judge-column">Giudice A</th><th class="judge-column">Giudice B</th><th class="judge-column">Giudice C</th></tr></thead>
+                            <tbody>`
+                );
+                generateTableRows(testType, figureCount, sectionHeaders, figureSpecificLabels);
+                document.write(
+                    `           <tr class="total-row"><td class="figure-column">TOTALE</td><td class="coeff-column">-</td><td class="result-cell" id="${testType}_totalA">0.0</td><td class="result-cell" id="${testType}_totalB">0.0</td><td class="result-cell" id="${testType}_totalC">0.0</td></tr>
+                                <tr class="total-row"><td class="figure-column">MEDIA</td><td class="coeff-column">-</td><td class="result-cell" id="${testType}_avgTotal" colspan="3">0.0</td></tr>
+                                <tr class="percentage-row"><td class="figure-column">PERCENTUALE (%)</td><td class="coeff-column">-</td><td class="result-cell" id="${testType}_percentage" colspan="3">0.0%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                );
+            }
+
+            // Generazione di tutte le tabelle
+            createTableStructure('e100', "RIPRESA E100 - Scheda Qualitativa", "Valutazione per le riprese ID10 ID20 ID30 E50 E60 E80 E90 E100 E110", 4);
+            createTableStructure('e200', "RIPRESA E200 - 16 Figure", "11 Figure Tecniche + 5 Voti d'Insieme", 16);
+            createTableStructure('f100', "RIPRESA F100 - Ed. 2016/Rev. 2022", "19 Figure Tecniche + 4 Voti d'Insieme + Uscita", 24, {20:"Voti d'Insieme", 24:"Uscita"}, {20:"(Andature)", 21:"(Impulso)", 22:"(Sottomissione)", 23:"(Posizione Cav.)", 24:"(Uscire in A)"});
+            createTableStructure('f400', "RIPRESA F400 - Ed. 2016/Rev. 2022", "26 Figure Tecniche + 4 Voti d'Insieme + Uscita", 31, {27:"Voti d'Insieme", 31:"Uscita"}, {27:"(Andature)", 28:"(Impulso)", 29:"(Sottomissione)", 30:"(Posizione Cav.)", 31:"(Uscire in A)"});
+            createTableStructure('m_junior', "RIPRESA M JUNIOR - Ed. 2009/Rev. 2022", "29 Figure Tecniche + 1 Voto d'Insieme + Uscita", 31, {30:"Voto d'Insieme", 31:"Uscita"}, {30:"(Impr. Generale)", 31:"(Uscire in A)"});
+            createTableStructure('grand_prix_d51', "FEI GRAND PRIX D5.1 - Ed. 2009/Rev. 2022", "33 Figure Tecniche + 1 Voto d'Insieme + Uscita", 35, {34:"Voto d'Insieme", 35:"Uscita"}, {34:"(Impr. Generale)", 35:"(Uscire in A)"});
+            createTableStructure('intermediate_a_d41', "FEI INTERMEDIATE A D4/1 - Ed. 2015/Rev. 2022", "27 Figure Tecniche + 1 Voto d'Insieme + Uscita", 29, {28:"Voto d'Insieme", 29:"Uscita"}, {28:"(Impr. Generale)", 29:"(Uscire in A)"});
+            createTableStructure('st_georges_d2', "FEI PRIX ST-GEORGES D2 - Ed. 2009/Rev. 2022", "26 Figure Tecniche + 1 Voto d'Insieme + Uscita", 28, {27:"Voto d'Insieme", 28:"Uscita"}, {27:"(Impr. Generale)", 28:"(Uscire da A)"});
+            createTableStructure('m100', "RIPRESA M100 - Ed. 2016/Rev. 2023", "20 Figure Tecniche + 4 Voti d'Insieme + Uscita", 25, {21:"Voti d'Insieme", 25:"Uscita"}, {21:"(Andature)", 22:"(Impulso)", 23:"(Sottomissione)", 24:"(Posizione Cav.)", 25:"(Uscire in A)"});
+            createTableStructure('novilla2025', "NOVILLA 2025", "20 Figure Tecniche + 5 Voti Collettivi", 25, {21:"Collective Marks"}, {21:"(Trot)", 22:"(Walk)", 23:"(Canter)", 24:"(Way of Going)", 25:"(General Impr.)"});
+            createTableStructure('primera2025', "PRIMERA 2025", "21 Figure Tecniche + 5 Voti Collettivi", 26, {22:"Collective Marks"}, {22:"(Trot)", 23:"(Walk)", 24:"(Canter)", 25:"(Way of Going)", 26:"(General Impr.)"});
+            
+            createTableStructure('rlm_ibiza', "RLM IBIZA 2018", "15 Mov. Obbligatori + 1 Facoltativo + 2 Artistica", 18, {16:"Mov. Facoltativi", 17:"Presentazione Artistica"}, {16:"(Passo Spagnolo)", 17:"(Ritmo, Energia, Armonia)", 18:"(Coreografia, Musica)"});
+            createTableStructure('rlm_bailarina', "RLM BAILARINA 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(Trans. mont. piaffer)", 17:"(Trans. scend. piaffer)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Coreografia)", 22:"(Grado Difficoltà)", 23:"(Interpretazione Musica)"});
+            createTableStructure('rlm_carmencita', "RLM CARMENCITA 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(Cambio dx-sx)", 17:"(Cambio sx-dx)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Grado Difficoltà)", 22:"(Coreografia)", 23:"(Scelta Musica, Armonia)"});
+            createTableStructure('rlm_fandango', "RLM FANDANGO 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(1/2 Piroetta dx)", 17:"(1/2 Piroetta sx)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Coreografia)", 22:"(Grado Difficoltà)", 23:"(Interpretazione Musica)"});
+            createTableStructure('rlm_flamenca', "RLM FLAMENCA 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(Cambio dx-sx)", 17:"(Cambio sx-dx)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Grado Difficoltà)", 22:"(Coreografia)", 23:"(Scelta Musica, Armonia)"});
+            createTableStructure('rlm_iberica', "RLM IBERICA 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(Trans. passage-piaffer)", 17:"(Trans. piaffer-passage)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Coreografia)", 22:"(Grado Difficoltà)", 23:"(Interpretazione Musica)"});
+            createTableStructure('rlm_lusitania', "RLM LUSITANIA 2021", "15 Mov. Obbligatori + 3 Facoltativi + 5 Artistica", 23, {16:"Mov. Facoltativi", 19:"Presentazione Artistica"}, {16:"(Passage min 12m)", 17:"(Piaffer min 8 battute)", 18:"(Passo Spagnolo)", 19:"(Ritmo, Energia, Elasticità)", 20:"(Armonia Cav/Cav)", 21:"(Coreografia)", 22:"(Grado Difficoltà)", 23:"(Interpretazione Musica)"});
+            
+            createTableStructure('arte_eleganza', "SCHEDA VALUTAZIONE ARTE ELEGANZA", "Concorso di Arte Eleganza", 14, {12:"Punti di Interesse"}, {1:"(Presentazione Passo Mano Dx)", 2:"(Entrata Linea Centrale)", 3:"(Armonia Cav/Cav)", 4:"(Ritmo Energia Elasticità)", 5:"(Utilizzo Pista Creatività)", 6:"(Grado Difficoltà Rischio)", 7:"(Scelta Interpr. Musica)", 8:"(Correttezza Esec. Figure)", 9:"(Alt Immobilità Saluto Centro)", 10:"(Naturalezza Esec. Cavallo)", 11:"(Arte ed Eleganza)", 12:"(Sottomissione Impulso)", 13:"(Correttezza Aiuti)", 14:"(Posizione Assetto Cavaliere)"});
+        </script>
+
+        <div class="save-load-section">
+            <h3>💾 Salvataggio e Caricamento Dati</h3>
+            <div><button class="btn btn-save" onclick="saveToFile()">📥 Scarica Schede Complete (JSON)</button><button class="btn btn-load" onclick="document.getElementById('fileInput').click()">📤 Carica Schede</button><input type="file" id="fileInput" accept=".json" style="display: none;" onchange="loadFromFile(event)"></div>
+            <div style="margin-top: 10px;"><button class="btn btn-clear" onclick="clearCurrentBinomio()">🗑️ Cancella Binomio Corrente</button><button class="btn btn-clear-all" onclick="clearAllBinomi()">🗑️ Cancella Tutti i Binomi</button></div>
+            <div style="margin-top: 10px;"><button class="btn btn-export-summary" onclick="exportSummary()">📊 Esporta Riassunto (CSV)</button><button class="btn btn-auto" onclick="toggleAutoSave()"><span id="autoSaveText">🔄 Attiva Salvataggio Automatico</span></button><small style="display: block; margin-top: 5px; color: #5f6368;">Il salvataggio automatico funziona solo quando usi il file localmente sul tuo computer.</small></div>
+        </div>
+    </div>
+
+    <script src="js/dressage-calculator.js"></script>
+    <script src="js/file-manager.js"></script>
+</body>
+</html>
