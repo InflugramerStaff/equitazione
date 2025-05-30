@@ -1,0 +1,498 @@
+/* Reset e base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', 'Arial', sans-serif; /* Roboto come preferenza, fallback Arial */
+    margin: 0;
+    background-color: #f5f5f5; /* Sfondo tipico Material */
+    line-height: 1.6;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Container principale */
+.container {
+    max-width: 1300px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    color: #202124;
+    margin-bottom: 8px;
+    font-size: 2.2em;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+h1::after { content: none; }
+
+.subtitle {
+    text-align: center;
+    color: #5f6368;
+    margin-bottom: 32px;
+    font-size: 1.1em;
+}
+
+/* Gestione Binomi */
+.binomi-management {
+    margin: 24px 0;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+}
+
+.binomi-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.binomi-info h3 {
+    color: #202124;
+    margin-bottom: 4px;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.binomi-counter {
+    color: #5f6368;
+    font-size: 1em;
+}
+
+.binomi-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.binomio-data {
+    margin-top: 16px;
+}
+
+.rider-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    flex-grow: 1;
+}
+
+.field-group label {
+    font-weight: 500;
+    color: #5f6368;
+    margin-bottom: 6px;
+    font-size: 0.875em;
+    text-transform: none;
+}
+
+.field-group input[type="text"] {
+    padding: 10px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #f8f9fa;
+}
+
+.field-group input[type="text"]:focus {
+    outline: none;
+    border-color: #1a73e8;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+
+.binomio-header {
+    text-align: left;
+    margin: 24px 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.binomio-header h3 {
+    color: #1a73e8;
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: 500;
+    text-shadow: none;
+}
+
+/* Tab Menu Container per gestire multiple file di tab */
+.tab-menu-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px; /* Spazio sotto l'intero blocco di tab */
+}
+
+.tab-menu {
+    display: flex;
+    flex-wrap: wrap; /* Permette ai tab di andare a capo se necessario nella loro riga */
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+    /* Rimuoviamo il bordo inferiore da qui per gestirlo sul container o sull'ultima riga */
+}
+.tab-menu-container .tab-menu:not(:last-child) {
+    margin-bottom: 4px; /* Piccolo spazio tra le righe di tab */
+}
+.tab-menu-container .tab-menu:last-child {
+     border-bottom: 1px solid #dadce0; /* Bordo inferiore solo per l'ultima riga di tab */
+}
+
+
+.tab-button {
+    padding: 10px 15px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.90em;
+    font-weight: 500;
+    margin: 0 2px 0 0; /* Margine inferiore rimosso, margine destro piccolo */
+    border-radius: 4px 4px 0 0;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease, background-color 0.2s ease;
+    color: #5f6368;
+    text-transform: none;
+    position: relative;
+    overflow: visible;
+    flex-shrink: 0;
+}
+.tab-button:hover {
+    color: #202124;
+    background-color: rgba(32,33,36,0.04);
+}
+.tab-button.active {
+    color: #1a73e8;
+    border-bottom-color: #1a73e8;
+    font-weight: 600;
+}
+.tab-button::before { content: none; }
+
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    padding-top: 16px;
+}
+.tab-content.active { display: block; }
+
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 24px;
+    border-radius: 0;
+    overflow: visible;
+    box-shadow: none;
+    background-color: #fff;
+    border: 1px solid #dadce0;
+}
+
+/* Table Headers */
+th {
+    background-color: #f8f9fa;
+    color: #5f6368;
+    font-weight: 500;
+    font-size: 0.875em;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #dadce0;
+    border-right: 1px solid #dadce0;
+    text-transform: none;
+    text-shadow: none;
+}
+th:last-child { border-right: none; }
+th.coeff-column, th.judge-column { text-align: center; }
+
+
+/* Table Cells */
+td {
+    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    padding: 10px 16px;
+    vertical-align: middle;
+    background-color: #fff;
+}
+td:last-child { border-right: none; }
+/* Rimosso td:hover generale per evitare conflitti con la centratura specifica,
+   se si vuole un hover per l'intera riga, si può aggiungere a tr:hover td */
+/* td:hover { background-color: #f8f9fa; } */
+tr:hover td { /* Applica hover a tutte le celle della riga */
+    background-color: #f8f9fa;
+}
+
+
+/* Column Styles */
+.figure-column {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    font-size: 1em;
+    color: #202124;
+    text-align: center;
+}
+
+.coeff-column, td.coeff-column {
+    width: 100px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+/* Centra il contenuto (input) nelle celle dei giudici */
+/* Selettore per le celle che sono la 3a, 4a, e 5a figlio di un <tr> nel tbody */
+table tbody tr td:nth-child(3),
+table tbody tr td:nth-child(4),
+table tbody tr td:nth-child(5) {
+    text-align: center;
+}
+
+
+/* Input Fields in Table */
+td input[type="number"] {
+    max-width: 70px;
+    padding: 8px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    text-align: center; /* Centra il testo DENTRO l'input */
+    font-size: 0.95em;
+    background-color: #fff;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    /* margin-left: auto;  Rimosso perché text-align:center sulla cella fa il lavoro
+    margin-right: auto; per elementi inline/inline-block */
+    /* display: block; Rimosso, input è inline-block di default */
+}
+
+/* Nascondi le frecce dagli input di tipo number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+td input[type="number"]:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    background-color: #fff;
+}
+
+.coeff-input {
+    font-weight: 500;
+    background-color: #f1f3f4;
+}
+
+/* Result Rows */
+.total-row td, .percentage-row td {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    padding: 12px 16px;
+    font-size: 1em;
+    font-family: inherit;
+    border-top: 1px solid #dadce0;
+}
+.total-row td.figure-column, .percentage-row td.figure-column {
+    text-align: left;
+    color: #202124;
+}
+
+.result-cell {
+    background-color: #e8f0fe !important;
+    color: #1967d2;
+    font-weight: 500;
+    font-size: 1em;
+    text-shadow: none;
+    text-align: center;
+}
+
+/* Section Headers in table */
+.section-header td {
+    background-color: #e8eaed;
+    color: #3c4043;
+    font-weight: 500;
+    font-size: 0.9em;
+    text-align: center;
+    padding: 8px 16px;
+    border-top: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+}
+
+
+/* Save/Load Section */
+.save-load-section {
+    margin: 32px 0 0 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.save-load-section h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #202124;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-transform: none;
+}
+.save-load-section > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.save-load-section small {
+    color: #5f6368;
+    font-size: 0.8em;
+}
+
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.875em;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    text-transform: none;
+    letter-spacing: 0.25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    line-height: 1.5;
+}
+.btn:hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    transform: none;
+}
+.btn:active {
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    transform: none;
+}
+.btn::before { content: none; }
+
+/* Contained Button (Default) */
+.btn {
+    background-color: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+}
+.btn:hover { background-color: #1869cf; border-color: #1869cf; }
+.btn:active { background-color: #1760c2; border-color: #1760c2; }
+
+/* Specific Button Variants */
+.btn-add { background-color: #34a853; border-color: #34a853; color: white; }
+.btn-add:hover { background-color: #2e954a; border-color: #2e954a; }
+.btn-add:active { background-color: #2a8743; border-color: #2a8743; }
+
+.btn-prev, .btn-next { background-color: #f8f9fa; color: #202124; border-color: #dadce0;}
+.btn-prev:hover, .btn-next:hover { background-color: #f1f3f4; border-color: #d2d5d9;}
+.btn-prev:active, .btn-next:active { background-color: #e8eaed; border-color: #c6c9cd;}
+
+.btn-prev:disabled, .btn-next:disabled, .btn-delete:disabled {
+    background-color: #f1f3f4;
+    color: #bdc1c6;
+    border-color: #dadce0;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-delete { background-color: #ea4335; border-color: #ea4335; color: white; }
+.btn-delete:hover { background-color: #d93529; border-color: #d93529; }
+.btn-delete:active { background-color: #cc2e22; border-color: #cc2e22; }
+
+.btn-save { background-color: #188038; border-color: #188038; color: white; }
+.btn-save:hover { background-color: #157231; border-color: #157231; }
+.btn-save:active { background-color: #13652b; border-color: #13652b; }
+
+/* .btn-load usa lo stile di default .btn */
+
+.btn-clear { background-color: #fbbc04; border-color: #fbbc04; color: #202124; }
+.btn-clear:hover { background-color: #f2b000; border-color: #f2b000; }
+.btn-clear:active { background-color: #e9a600; border-color: #e9a600; }
+
+.btn-clear-all { background-color: #e97131; border-color: #e97131; color: white; }
+.btn-clear-all:hover { background-color: #da6526; border-color: #da6526; }
+.btn-clear-all:active { background-color: #cc5c1f; border-color: #cc5c1f; }
+
+.btn-export-summary { background-color: #673ab7; border-color: #673ab7; color: white; }
+.btn-export-summary:hover { background-color: #5e35a6; border-color: #5e35a6; }
+.btn-export-summary:active { background-color: #563097; border-color: #563097; }
+
+.btn-auto { background-color: #9c27b0; border-color: #9c27b0; color: white; }
+.btn-auto:hover { background-color: #89229b; border-color: #89229b; }
+.btn-auto:active { background-color: #7d1f8d; border-color: #7d1f8d; }
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container { margin: 16px; padding: 16px; }
+    h1 { font-size: 1.8em; }
+    .subtitle { font-size: 1em; margin-bottom: 24px; }
+
+    .binomi-controls { flex-direction: column; align-items: stretch; }
+    .rider-info { flex-direction: column; gap: 16px; }
+    .field-group { min-width: 100%; }
+    .binomi-buttons { justify-content: flex-start; }
+
+    /* .tab-menu gestito da flex-wrap nel container */
+    .tab-button { padding: 10px 12px; font-size: 0.85em; } /* Ancora più piccolo se necessario */
+
+    th, td { padding: 8px 10px; font-size: 0.9em; }
+    td input[type="number"] { max-width: 60px; padding: 6px; }
+
+    .save-load-section > div { flex-direction: column; }
+    .save-load-section .btn { width: 100%; margin-bottom: 8px; } /* Bottoni a larghezza piena nel save-load */
+    .binomi-buttons .btn { width: auto; margin-bottom: 0; } /* Ripristina per bottoni gestione binomi */
+}
+
+@media (max-width: 480px) {
+    .container { margin: 8px; padding: 12px; }
+    h1 { font-size: 1.6em; }
+    .tab-menu-container { margin-bottom: 16px; } /* Meno spazio sotto i tab */
+    .tab-button { font-size: 0.8em; padding: 8px 10px; } /* Ancora più piccolo */
+
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
+/* Stampa */
+@media print {
+    body { background-color: white; font-size: 10pt; color: #000; }
+    .save-load-section, .tab-menu-container, .binomi-management, .btn, h1::after, .subtitle { display: none !important; }
+    .container { box-shadow: none; padding: 0; border: none; margin: 0; max-width: 100%; }
+    table, th, td { border: 1px solid #ccc; font-size: 9pt; }
+    th { background-color: #eee; }
+    .result-cell { background-color: #f0f0f0 !important; color: #000 !important; }
+    h1 { font-size: 1.5em; color: #000; text-align: left; margin-bottom: 10px; }
+    .binomio-header h3 { color: #000; }
+}
+
+/* Scrollbar personalizzata */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
